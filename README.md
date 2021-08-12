@@ -229,3 +229,52 @@ menuentry "Arch Linux" {
 }
 
 ```
+
+
+## Setup DHCP support
+
+```
+# pacman -S dhcpcd
+# systemctl enable dhcpcd
+```
+
+## Install modules
+
+Ref: <a href="https://gist.github.com/imrvelj/c65cd5ca7f5505a65e59204f5a3f7a6d">https://gist.github.com/imrvelj/c65cd5ca7f5505a65e59204f5a3f7a6d</a>
+```
+git clone https://aur.archlinux.org/aic94xx-firmware.git
+cd aic94xx-firmware
+makepkg -sri
+
+git clone https://aur.archlinux.org/wd719x-firmware.git
+cd wd719x-firmware
+makepkg -sri
+```
+
+## Install XFCE Desktop Env
+
+Ref: <a href="https://wiki.archlinux.org/title/Xfce#Installation">https://wiki.archlinux.org/title/Xfce#Installation</a>
+
+```
+pacman -S xfce4 xfce4-goodies
+```
+
+## Install I3
+
+```
+$ sudo pacman -S i3
+$ sudo pacman -S xorg-server xorg-xinit xorg-xrandr
+$ echo "exec i3" >> ~/.xinitrc
+```
+
+Configure 1920x1200 resolution on startup
+```
+$ echo "#!/bin/bash" >> ~/bin/startup
+$ echo "xrandr --device eDP-1 --mode 1920x1200" >> ~/bin/startup
+$ echo "exec --no-startup-id ~/bin/startup" >> ./config/i3/config
+```
+
+Start i3
+```
+$ startx
+```

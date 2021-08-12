@@ -4,7 +4,9 @@ Install Arch Linux on MBP 11,5
 
 ## Resources:
 - <a href="https://wiki.archlinux.org/title/MacBookPro11,x">https://wiki.archlinux.org/title/MacBookPro11,x</a>
-
+- <a href="https://shanereilly.net/posts/dual-booting_macos-and-arch-linux/">https://shanereilly.net/posts/dual-booting_macos-and-arch-linux/</a>
+- <a href="https://www.oueta.com/linux/installing-arch-linux-on-a-macbook-or-other-uefi-systems/">https://www.oueta.com/linux/installing-arch-linux-on-a-macbook-or-other-uefi-systems/</a>
+- <a href="https://gist.github.com/ellipticaldoor/793606049f18dfb57e9c24d6fbe0efe4">https://gist.github.com/ellipticaldoor/793606049f18dfb57e9c24d6fbe0efe4</a>
 
 ## Partition Disks in MACOS
 - In MacOS, open `Disk Util`.
@@ -121,18 +123,14 @@ iwctl --passphrase $WIFI_PASS station wlan0 connect <wifi_name>
 ```
 
 ## Compile linux-macbook kernel
-Normal Boot would freeze on the login prompt. Compiling and using this kernel fixed this.
+Normal boot may freeze on the login prompt. Compiling and using this kernel fixed this for me.
 
-Resize `tmp` to have enough space for downloading and building.
-
-<a href="https://archlinuxarm.org/forum/viewtopic.php?f=57&t=8812#p46812">https://archlinuxarm.org/forum/viewtopic.php?f=57&t=8812#p46812</a>
+Resize `tmp` to have enough space to download and build. Ref: <a href="https://archlinuxarm.org/forum/viewtopic.php?f=57&t=8812#p46812">https://archlinuxarm.org/forum/viewtopic.php?f=57&t=8812#p46812</a>
 ```
 # mount -o remount,size=30G,noatime /tmp
 ```
 
-Adjust swap/memory cleanup aggressiveness. This seemed to solve swap/memory filling up until failure.
-
-<a href="https://wiki.manjaro.org/index.php/Swap">https://wiki.manjaro.org/index.php/Swap</a>
+Adjust swap/memory cleanup aggressiveness. This seemed to solve swap/memory filling up until failure. Ref: <a href="https://wiki.manjaro.org/index.php/Swap">https://wiki.manjaro.org/index.php/Swap</a>
 ```
 # sysctl vm.swappiness=85
 # sysctl vm.vfs_cache_pressure=150
@@ -147,17 +145,25 @@ $ df -h
 
 ## Add yoart
 
-Ref: <a href="https://www.tecmint.com/install-yaourt-in-arch-linux/">https://www.tecmint.com/install-yaourt-in-arch-linux/</a>
+- Ref: <a href="https://www.tecmint.com/install-yaourt-in-arch-linux/">https://www.tecmint.com/install-yaourt-in-arch-linux/</a>
+- Ref: <a href="https://gist.github.com/ellipticaldoor/793606049f18dfb57e9c24d6fbe0efe4">https://gist.github.com/ellipticaldoor/793606049f18dfb57e9c24d6fbe0efe4</a>
+
+Edit `/etc/pacman.conf`
 ```
-$ sudo pacman -S --needed base-devel git wget yajl
-$ cd /tmp
-$ git clone https://aur.archlinux.org/package-query.git
-$ cd package-query/
-$ makepkg -si && cd /tmp/
-$ git clone https://aur.archlinux.org/yaourt.git
-$ cd yaourt/
-$ makepkg -si
+------------------------------------------------
+# Yaourt repo
+[archlinuxfr]
+SigLevel = Never
+Server = http://repo.archlinux.fr/$arch
+------------------------------------------------
 ```
+
+```
+sudo pacman -Syu
+sudo pacman -S yaourt
+yaourt -Syu
+```
+
 
 ## Install linux-macbook kernel
 
@@ -177,12 +183,12 @@ github.com/archlinux/linux.git/...
 ```
 
 
-
 ## Setup Bootctl
 This will copy kernels and `.img` over to the boot partition. It will make `systemd-boot` the default bootloader. `rEFInd` is better; see below for `rEFInd`.
 ```
 # bootctl --path=/boot install
 ```
+
 
 ## Setup rEFInd
 
